@@ -222,29 +222,7 @@
    ============================================================ */
 const APPS = [
   { id:'notas',      name:'Notas Rápidas',  dev:'Studio Kite',   cat:'Productividad', rating:4.7, size:'2.1 MB', color:'#f59e0b,#f97316', letter:'N',
-    desc:'Captura ideas al instante con sincronización y etiquetas. Funciona sin conexión.', url:'https://example.com/notas' },
-  { id:'clima',      name:'Clima Ya',       dev:'Nordwind Labs', cat:'Utilidades',    rating:4.5, size:'1.4 MB', color:'#38bdf8,#2563eb', letter:'C',
-    desc:'Pronóstico por horas, radar y alertas meteorológicas para tu ubicación.', url:'https://example.com/clima' },
-  { id:'puzzle',     name:'Puzzle Zen',     dev:'Pixel Bloom',   cat:'Juegos',        rating:4.8, size:'8.3 MB', color:'#a855f7,#ec4899', letter:'P',
-    desc:'Rompecabezas relajantes con más de 300 niveles generados proceduralmente.', url:'https://example.com/puzzle' },
-  { id:'radio',      name:'Radio Global',   dev:'WaveCast',      cat:'Multimedia',    rating:4.2, size:'3.0 MB', color:'#ef4444,#f97316', letter:'R',
-    desc:'Miles de emisoras de radio en directo de todo el mundo, sin registros.', url:'https://example.com/radio' },
-  { id:'finanzas',   name:'Gasto Claro',    dev:'Ledger Co.',    cat:'Productividad', rating:4.6, size:'2.8 MB', color:'#10b981,#059669', letter:'G',
-    desc:'Controla tus gastos, presupuestos y suscripciones con informes visuales.', url:'https://example.com/finanzas' },
-  { id:'chat',       name:'Charlas',        dev:'Bluebird',      cat:'Social',        rating:4.0, size:'5.6 MB', color:'#06b6d4,#3b82f6', letter:'C',
-    desc:'Mensajería ligera por salas temáticas con cifrado de extremo a extremo.', url:'https://example.com/chat' },
-  { id:'recetas',    name:'Cocina Fácil',   dev:'Sabor Studio',  cat:'Utilidades',    rating:4.4, size:'4.1 MB', color:'#f43f5e,#fb7185', letter:'C',
-    desc:'Recetas paso a paso con lista de la compra automática y modo cocina.', url:'https://example.com/recetas' },
-  { id:'fotos',      name:'Filtro Pro',     dev:'Aperture',      cat:'Multimedia',    rating:4.9, size:'12 MB',  color:'#8b5cf6,#6366f1', letter:'F',
-    desc:'Editor de fotos con filtros profesionales, curvas y exportación RAW.', url:'https://example.com/fotos' },
-  { id:'runner',     name:'Runner Dash',    dev:'Arcade Nine',   cat:'Juegos',        rating:4.3, size:'15 MB',  color:'#eab308,#f59e0b', letter:'R',
-    desc:'Juego de carreras infinitas con controles de un solo toque.', url:'https://example.com/runner' },
-  { id:'traductor',  name:'Traduce Todo',   dev:'Polyglot',      cat:'Utilidades',    rating:4.5, size:'1.9 MB', color:'#14b8a6,#22d3ee', letter:'T',
-    desc:'Traducción instantánea de texto y voz en más de 60 idiomas.', url:'https://example.com/traductor' },
-  { id:'musica',     name:'Loop Player',    dev:'Rhythm Inc.',   cat:'Multimedia',    rating:4.1, size:'6.7 MB', color:'#f472b6,#a855f7', letter:'L',
-    desc:'Reproductor de música con ecualizador, listas y modo sin conexión.', url:'https://example.com/musica' },
-  { id:'habitos',    name:'Hábitos+',       dev:'Daily Loop',    cat:'Productividad', rating:4.7, size:'1.2 MB', color:'#22c55e,#84cc16', letter:'H',
-    desc:'Crea rutinas diarias, mide rachas y recibe recordatorios inteligentes.', url:'https://example.com/habitos' }
+    desc:'Captura ideas al instante con sincronización y etiquetas. Funciona sin conexión.', url:'https://example.com/notas' }
 ];
 
 const CATEGORIAS = ['Todas', ...new Set(APPS.map(a => a.cat))];
