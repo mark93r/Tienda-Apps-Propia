@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0b0f" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="description" content="Mi tienda de aplicaciones web" />
+<title>Mi Tienda</title>
+<style>
+  :root{
+    --bg:#0b0b0f;
+    --card:#17171d;
+    --sheet:#1b1b22;
+    --line:rgba(255,255,255,.08);
+    --txt:#f2f2f5;
+    --muted:#9494a1;
+    --accent:#4f8cff;
+    --accent2:#a855f7;
+    --r:18px;
+    --safe-b:env(safe-area-inset-bottom, 0px);
+    --safe-t:env(safe-area-inset-top, 0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f2f3f6; --card:#ffffff; --sheet:#ffffff;
+      --line:rgba(0,0,0,.08); --txt:#111116; --muted:#6b6b76;
+      --accent:#2563eb; --accent2:#7c3aed;
+    }
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;}
+  body{
+    background:var(--bg); color:var(--txt);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    padding-bottom:calc(24px + var(--safe-b));
+    overscroll-behavior-y:contain;
+    min-height:100dvh;
+  }
+  body.locked{overflow:hidden;}
+
+  /* ---------- Cabecera ---------- */
+  header{
+    position:sticky; top:0; z-index:20;
+    padding:calc(12px + var(--safe-t)) 16px 10px;
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter:saturate(160%) blur(14px);
+    -webkit-backdrop-filter:saturate(160%) blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .logo{
+    width:34px; height:34px; border-radius:11px; flex:0 0 auto;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid; place-items:center; font-weight:800; color:#fff; font-size:17px;
+  }
+  .brand h1{font-size:19px; margin:0; letter-spacing:-.3px;}
+  .brand small{display:block; color:var(--muted); font-size:12px; font-weight:500; letter-spacing:0;}
+
+  .search{position:relative;}
+  .search input{
+    width:100%; padding:12px 44px 12px 42px;
+    border-radius:14px; border:1px solid var(--line);
+    background:var(--card); color:var(--txt);
+    font-size:16px; /* evita el zoom automático en iOS */
+    outline:none; appearance:none;
+  }
+  .search input:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%, transparent);}
+  .search svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:.55;}
+  .clear{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:32px; height:32px; border:0; border-radius:50%;
+    background:transparent; color:var(--muted); font-size:18px;
+    display:none; cursor:pointer;
+  }
+  .search input:not(:placeholder-shown) + .clear{display:block;}
+
+  /* ---------- Chips de categoría ---------- */
+  .chips{
+    display:flex; gap:8px; overflow-x:auto; padding:12px 16px 2px;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto; padding:8px 14px; border-radius:999px; cursor:pointer;
+    border:1px solid var(--line); background:var(--card); color:var(--muted);
+    font-size:14px; font-weight:600; white-space:nowrap;
+    transition:background .18s, color .18s, border-color .18s;
+  }
+  .chip[aria-selected="true"]{
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:transparent; color:#fff;
+  }
+
+  /* ---------- Cuadrícula ---------- */
+  main{padding:14px 16px 0;}
+  .section-title{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin:6px 0 12px;}
+  .grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:12px;
+    animation:fade .3s ease both;
+  }
+  @media (min-width:520px){ .grid{grid-template-columns:repeat(3,1fr);} }
+  @media (min-width:760px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    padding:14px 12px 12px; text-align:center; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    transition:transform .15s ease, border-color .15s;
+  }
+  .card:active{transform:scale(.97); border-color:var(--accent);}
+  .icon{
+    width:58px; height:58px; border-radius:16px; margin-bottom:8px;
+    display:grid; place-items:center;
+    font-size:25px; font-weight:800; color:#fff; letter-spacing:-.5px;
+    box-shadow:0 6px 16px -6px rgba(0,0,0,.55);
+  }
+  .card h3{font-size:14px; margin:0; font-weight:650; line-height:1.25;
+    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; width:100%;}
+  .card p{font-size:11.5px; margin:0; color:var(--muted);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;}
+  .rating{margin-top:8px; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:3px;}
+  .rating b{color:var(--txt); font-weight:600;}
+
+  .empty{padding:60px 20px; text-align:center; color:var(--muted);}
+  .empty span{font-size:38px; display:block; margin-bottom:10px;}
+
+  /* ---------- Hoja de detalle ---------- */
+  .backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:40;
+    opacity:0; pointer-events:none; transition:opacity .25s;
+    -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);
+  }
+  .backdrop.on{opacity:1; pointer-events:auto;}
+
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:var(--sheet); border-radius:24px 24px 0 0;
+    border-top:1px solid var(--line);
+    max-height:88dvh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    transform:translateY(102%); transition:transform .32s cubic-bezier(.22,1,.36,1);
+    padding:8px 20px calc(24px + var(--safe-b));
+    box-shadow:0 -20px 50px -20px rgba(0,0,0,.6);
+  }
+  .sheet.on{transform:translateY(0);}
+  .handle{width:38px; height:4px; border-radius:99px; background:var(--line); margin:4px auto 16px;}
+  .sheet-top{display:flex; gap:14px; align-items:center;}
+  .sheet-top .icon{width:74px; height:74px; border-radius:20px; font-size:32px; margin:0;}
+  .sheet-top h2{margin:0; font-size:20px; letter-spacing:-.3px;}
+  .sheet-top .dev{color:var(--muted); font-size:13px; margin-top:2px;}
+  .meta{display:flex; gap:0; margin:18px 0 4px; text-align:center;}
+  .meta div{flex:1; padding:0 6px; border-right:1px solid var(--line);}
+  .meta div:last-child{border:0;}
+  .meta b{display:block; font-size:15px;}
+  .meta small{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px;}
+  .desc{margin:18px 0; color:var(--txt); opacity:.9; font-size:14.5px;}
+  .btn{
+    display:block; width:100%; padding:15px; border:0; border-radius:15px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff; font-size:16px; font-weight:700; text-align:center;
+    text-decoration:none; cursor:pointer;
+  }
+  .btn:active{filter:brightness(.92);}
+  .btn-ghost{
+    background:transparent; color:var(--muted); border:1px solid var(--line);
+    margin-top:10px; font-weight:600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">M</div>
+    <div>
+      <h1>Mi Tienda</h1>
+      <small>Aplicaciones web seleccionadas</small>
+    </div>
+  </div>
+
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+    </svg>
+    <input id="q" type="search" placeholder="Buscar aplicaciones" enterkeyhint="search" autocomplete="off" />
+    <button class="clear" id="clearBtn" aria-label="Borrar búsqueda">✕</button>
+  </div>
+</header>
+
+<nav class="chips" id="chips" role="tablist" aria-label="Categorías"></nav>
+
+<main>
+  <p class="section-title" id="count">Aplicaciones</p>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="backdrop" id="backdrop"></div>
+
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetName">
+  <div class="handle"></div>
+  <div class="sheet-top">
+    <div class="icon" id="sIcon">A</div>
+    <div>
+      <h2 id="sheetName">App</h2>
+      <div class="dev" id="sDev">Desarrollador</div>
+    </div>
+  </div>
+  <div class="meta">
+    <div><b id="sRating">4.5</b><small>Valoración</small></div>
+    <div><b id="sCat">Cat</b><small>Categoría</small></div>
+    <div><b id="sSize">1 MB</b><small>Tamaño</small></div>
+  </div>
+  <p class="desc" id="sDesc"></p>
+  <a class="btn" id="sOpen" href="#" target="_blank" rel="noopener">Abrir aplicación</a>
+  <button class="btn btn-ghost" id="sClose">Cerrar</button>
+</section>
+
+<script>
+/* ============================================================
+   1) DATOS — sustituye esta lista por tus apps reales
+   ============================================================ */
+const APPS = [
+  { id:'notas',      name:'Notas Rápidas',  dev:'Studio Kite',   cat:'Productividad', rating:4.7, size:'2.1 MB', color:'#f59e0b,#f97316', letter:'N',
+    desc:'Captura ideas al instante con sincronización y etiquetas. Funciona sin conexión.', url:'https://example.com/notas' },
+  { id:'clima',      name:'Clima Ya',       dev:'Nordwind Labs', cat:'Utilidades',    rating:4.5, size:'1.4 MB', color:'#38bdf8,#2563eb', letter:'C',
+    desc:'Pronóstico por horas, radar y alertas meteorológicas para tu ubicación.', url:'https://example.com/clima' },
+  { id:'puzzle',     name:'Puzzle Zen',     dev:'Pixel Bloom',   cat:'Juegos',        rating:4.8, size:'8.3 MB', color:'#a855f7,#ec4899', letter:'P',
+    desc:'Rompecabezas relajantes con más de 300 niveles generados proceduralmente.', url:'https://example.com/puzzle' },
+  { id:'radio',      name:'Radio Global',   dev:'WaveCast',      cat:'Multimedia',    rating:4.2, size:'3.0 MB', color:'#ef4444,#f97316', letter:'R',
+    desc:'Miles de emisoras de radio en directo de todo el mundo, sin registros.', url:'https://example.com/radio' },
+  { id:'finanzas',   name:'Gasto Claro',    dev:'Ledger Co.',    cat:'Productividad', rating:4.6, size:'2.8 MB', color:'#10b981,#059669', letter:'G',
+    desc:'Controla tus gastos, presupuestos y suscripciones con informes visuales.', url:'https://example.com/finanzas' },
+  { id:'chat',       name:'Charlas',        dev:'Bluebird',      cat:'Social',        rating:4.0, size:'5.6 MB', color:'#06b6d4,#3b82f6', letter:'C',
+    desc:'Mensajería ligera por salas temáticas con cifrado de extremo a extremo.', url:'https://example.com/chat' },
+  { id:'recetas',    name:'Cocina Fácil',   dev:'Sabor Studio',  cat:'Utilidades',    rating:4.4, size:'4.1 MB', color:'#f43f5e,#fb7185', letter:'C',
+    desc:'Recetas paso a paso con lista de la compra automática y modo cocina.', url:'https://example.com/recetas' },
+  { id:'fotos',      name:'Filtro Pro',     dev:'Aperture',      cat:'Multimedia',    rating:4.9, size:'12 MB',  color:'#8b5cf6,#6366f1', letter:'F',
+    desc:'Editor de fotos con filtros profesionales, curvas y exportación RAW.', url:'https://example.com/fotos' },
+  { id:'runner',     name:'Runner Dash',    dev:'Arcade Nine',   cat:'Juegos',        rating:4.3, size:'15 MB',  color:'#eab308,#f59e0b', letter:'R',
+    desc:'Juego de carreras infinitas con controles de un solo toque.', url:'https://example.com/runner' },
+  { id:'traductor',  name:'Traduce Todo',   dev:'Polyglot',      cat:'Utilidades',    rating:4.5, size:'1.9 MB', color:'#14b8a6,#22d3ee', letter:'T',
+    desc:'Traducción instantánea de texto y voz en más de 60 idiomas.', url:'https://example.com/traductor' },
+  { id:'musica',     name:'Loop Player',    dev:'Rhythm Inc.',   cat:'Multimedia',    rating:4.1, size:'6.7 MB', color:'#f472b6,#a855f7', letter:'L',
+    desc:'Reproductor de música con ecualizador, listas y modo sin conexión.', url:'https://example.com/musica' },
+  { id:'habitos',    name:'Hábitos+',       dev:'Daily Loop',    cat:'Productividad', rating:4.7, size:'1.2 MB', color:'#22c55e,#84cc16', letter:'H',
+    desc:'Crea rutinas diarias, mide rachas y recibe recordatorios inteligentes.', url:'https://example.com/habitos' }
+];
+
+const CATEGORIAS = ['Todas', ...new Set(APPS.map(a => a.cat))];
+
+/* ============================================================
+   2) REFERENCIAS Y ESTADO
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const grid = $('grid'), chipsEl = $('chips'), input = $('q'), countEl = $('count');
+const sheet = $('sheet'), backdrop = $('backdrop');
+
+let filtroCat = 'Todas';
+let filtroTexto = '';
+
+/* ============================================================
+   3) RENDER
+   ============================================================ */
+function pintarChips(){
+  chipsEl.innerHTML = '';
+  CATEGORIAS.forEach(cat => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.type = 'button';
+    b.role = 'tab';
+    b.textContent = cat;
+    b.setAttribute('aria-selected', String(cat === filtroCat));
+    b.addEventListener('click', () => {
+      filtroCat = cat;
+      pintarChips();
+      pintarGrid();
+    });
+    chipsEl.appendChild(b);
+  });
+}
+
+function filtradas(){
+  const t = filtroTexto.trim().toLowerCase();
+  return APPS.filter(a => {
+    const okCat = filtroCat === 'Todas' || a.cat === filtroCat;
+    const okTxt = !t || a.name.toLowerCase().includes(t) || a.dev.toLowerCase().includes(t) || a.cat.toLowerCase().includes(t);
+    return okCat && okTxt;
+  });
+}
+
+function pintarGrid(){
+  const lista = filtradas();
+  grid.innerHTML = '';
+
+  countEl.textContent = lista.length === 0
+    ? 'Sin resultados'
+    : `${lista.length} aplicación${lista.length === 1 ? '' : 'es'}${filtroCat !== 'Todas' ? ' · ' + filtroCat : ''}`;
+
+  if (!lista.length){
+    grid.insertAdjacentHTML('beforeend',
+      `<div class="empty" style="grid-column:1/-1"><span>🔍</span>No hay apps que coincidan.<br>Prueba con otra búsqueda.</div>`);
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+  lista.forEach(app => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', `${app.name} de ${app.dev}`);
+
+    const [c1, c2] = app.color.split(',');
+    card.innerHTML = `
+      <div class="icon" style="background:linear-gradient(135deg,${c1},${c2})">${app.letter}</div>
+      <h3>${app.name}</h3>
+      <p>${app.dev}</p>
+      <div class="rating">★ <b>${app.rating.toFixed(1)}</b></div>
+    `;
+
+    const abrir = () => { location.hash = 'app/' + app.id; };
+    card.addEventListener('click', abrir);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrir(); }
+    });
+
+    frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+}
+
+/* ============================================================
+   4) HOJA DE DETALLE + navegación con el botón atrás
+   ============================================================ */
+function abrirSheet(id){
+  const app = APPS.find(a => a.id === id);
+  if (!app){
+    cerrarSheet(false);
+    return;
+  }
+  const [c1, c2] = app.color.split(',');
+  $('sIcon').textContent = app.letter;
+  $('sIcon').style.background = `linear-gradient(135deg,${c1},${c2})`;
+  $('sheetName').textContent = app.name;
+  $('sDev').textContent = app.dev;
+  $('sRating').textContent = app.rating.toFixed(1);
+  $('sCat').textContent = app.cat;
+  $('sSize').textContent = app.size;
+  $('sDesc').textContent = app.desc;
+  $('sOpen').href = app.url;
+
+  sheet.classList.add('on');
+  backdrop.classList.add('on');
+  document.body.classList.add('locked');
+  sheet.scrollTop = 0;
+}
+
+function cerrarSheet(usarHistorial = true){
+  sheet.classList.remove('on');
+  backdrop.classList.remove('on');
+  document.body.classList.remove('locked');
+
+  if (usarHistorial && location.hash.startsWith('#app/')){
+    history.back();            // devuelve el control al botón "atrás"
+  }
+}
+
+function sincronizarRuta(){
+  const m = location.hash.match(/^#app\/(.+)$/);
+  if (m) abrirSheet(decodeURIComponent(m[1]));
+  else cerrarSheet(false);
+}
+
+window.addEventListener('hashchange', sincronizarRuta);
+backdrop.addEventListener('click', () => cerrarSheet(true));
+$('sClose').addEventListener('click', () => cerrarSheet(true));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && sheet.classList.contains('on')) cerrarSheet(true);
+});
+
+/* ============================================================
+   5) BÚSQUEDA
+   ============================================================ */
+let tId;
+input.addEventListener('input', () => {
+  clearTimeout(tId);
+  tId = setTimeout(() => {
+    filtroTexto = input.value;
+    pintarGrid();
+  }, 120); // pequeño debounce para que vaya fluido
+});
+$('clearBtn').addEventListener('click', () => {
+  input.value = '';
+  filtroTexto = '';
+  input.focus();
+  pintarGrid();
+});
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') input.blur();
+});
+
+/* ============================================================
+   6) ARRANQUE
+   ============================================================ */
+pintarChips();
+pintarGrid();
+sincronizarRuta();   // permite abrir un enlace directo tipo misitio.com/#app/notas
+</script>
+</body>
+</html>
